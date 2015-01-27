@@ -1,0 +1,28 @@
+//Start Hadoop
+./bin/start-all.sh
+
+//Put data into hadoop
+./bin/hadoop fs -put /Users/himansubadhai/Documents/input/assignment5/input assignment5
+
+
+//Seq Directory
+./bin/mahout seqdirectory -i assignment5/input -o assignment5/out-seqdir -c UTF-8 -chunk 5
+
+//Seq2sparse
+./bin/mahout seq2sparse -i assignment5/out-seqdir -o assignment5/vectors -wt tf
+
+//Row id
+./bin/mahout rowid -i assignment5/vectors/tf-vectors -o assignment5/matrix
+
+// Move docIndex out of matrix folder
+./bin/hadoop dfs -mv assignment5/matrix/docIndex assignment5/docIndex
+
+//CVB
+
+./bin/mahout cvb -i assignment5/matrix/matrix -o assignment5/LDA-out -dict assignment5/vectors/dictionary.file-0 -dt assignment/LDA-topics -mt assignment5/LDA-topic-model -k 10 -x 20 -ow
+
+//Vectordump
+
+./bin/mahout vectordump -i assignment5/LDA-out -d assignment5/vectors/dictionary.file-0 -dt sequencefile -p true -o /Users/himansubadhai/Documents/input/assignment5/term-topic.txt -sort assignment5/LDA-out -vs 10
+
+./bin/mahout vectordump -i assignment5/LDA-topics -d assignment5/vectors/dictionary.file-0 -dt sequencefile  -p true -o /Users/himansubadhai/Documents/input/assignment5/doc-topic.txt -sort assignment5/LDA-topics -vs 10

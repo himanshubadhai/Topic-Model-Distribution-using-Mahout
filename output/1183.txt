@@ -1,0 +1,5 @@
+handwriting
+part
+processing
+signal
+speech
